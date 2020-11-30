@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>简易的graphviz用法笔记 | Darksun</title>
+  
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="fonts.css" />
+        
+    <link rel="shortcut icon" href="#" />
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-84835425-2');
+    </script>
+
+  </head>
+
+  <body>
+    <div class="home">
+
+<link href="https://cdn.bootcdn.net/ajax/libs/highlight.js/10.0.0/styles/routeros.min.css" rel="stylesheet">
+<script src="https://cdn.bootcdn.net/ajax/libs/highlight.js/10.0.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script src="https://cdn.bootcdn.net/ajax/libs/highlight.js/10.0.0/languages/lua.min.js"></script>
+<div class="article-meta">
+<h1><span class="title">简易的graphviz用法笔记</span></h1>
+
+<h2 class="date">2018/02/16</h2>
+</div>
+
+<main>
+<p>Graphviz 是个好东西，可以画树和图之类的东西。本文记了一些常用的属性以及自动生成 Dot 代码的邻接表模板。</p>
+
+<p>摘录一些常用的属性，<a href="https://graphviz.gitlab.io/_pages/doc/info/attrs.html">完整 ref</a>：</p>
+
+<ul>
+<li><code>graph</code> 代表无向图，<code>digraph</code> 是有向图</li>
+<li><code>rankdir</code> 可以设置成 <code>LR</code> 来支持从左到右的布局，即 DAG 的风格</li>
+<li><code>shape</code> 可以设置节点形状，具体参见<a href="https://graphviz.gitlab.io/_pages/doc/info/shapes.html#polygon">多边形节点</a></li>
+<li><code>label</code> 可以设置边上的权值</li>
+</ul>
+
+<p>下面是自动生成 Dot 代码的邻接表模板：</p>
+
+<pre><code class="language-c++">template&lt;typename T, size_t n, size_t m&gt;
+struct Graph {
+    struct { int to, nxt; T w; } v[m];
+    int h[n], cnt;
+    Graph() { memset(h, -1, sizeof(h)); }
+    void add(int x, int y, const T&amp; w) { v[cnt] = {y, h[x], w}; h[x] = cnt++; }
+    void out(const char* filename, bool directed, bool weighted) {
+        FILE* f = fopen(filename, &quot;w&quot;);
+        fprintf(f, &quot;%s main{\n&quot;, directed ? &quot;digraph&quot; : &quot;graph&quot;);
+        FO(i, 0, n - 1) {
+            FE(j, *(this), i) {
+                if (j % 2 == 0 &amp;&amp; !directed) continue;
+                fprintf(f, &quot;\t%d%s%d&quot;, v[j].to, directed ? &quot;-&gt;&quot; : &quot;--&quot;, i);
+                if (weighted)
+                    fprintf(f, &quot;[label=\&quot;%s\&quot;]\n&quot;, std::to_string(v[j].w).c_str());
+            }
+            if (~h[i]) fprintf(f, &quot;%d[shape=circle]&quot;, i);
+        }
+        fputs(&quot;}&quot;, f);
+        fclose(f);
+    }
+};
+</code></pre>
+
+<ul>
+<li><code>filename</code>，<code>directed</code>，<code>weighted</code> 三个参数分别表示输出文件名，是否为有向图，是否为带权图</li>
+<li>无向图的加边必须连续</li>
+<li>用到了 <code>std::to_string</code>，所以需要在 C++1y 下编译</li>
+<li>需要配合板子集合里的总模板食用</li>
+<li>默认圆形比较美观</li>
+<li>生成后通过命令行编译即可：<code>dot -Tpng &lt;input&gt; -o &lt;output&gt;</code></li>
+</ul>
+
+<p>然鹅，我发现了一个更牛逼的生成器，<a href="https://csacademy.com/app/graph_editor/">Graph_Editor</a></p>
+
+<hr>
+<div id="comment"></div>
+</main>
+
+  <footer>
+  <hr></hr>
+<div>Copyright © 2015-2018 ccinv. All rights reserved.</div>
+  
+  </footer>
+  </div>
+  </body>
+</html>
+
+<link href="https://cdn.bootcdn.net/ajax/libs/KaTeX/0.10.0/katex.min.css" rel="stylesheet">
+<script src="https://cdn.bootcdn.net/ajax/libs/KaTeX/0.10.0/katex.min.js"></script>
+<script src="https://cdn.bootcdn.net/ajax/libs/KaTeX/0.10.0/contrib/auto-render.min.js"></script>
+<script>renderMathInElement(document.body,{delimiters: [{left: "$$", right: "$$", display: true},{left: "$", right: "$", display: false},]});</script>

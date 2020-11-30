@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Microlight中文文档 | Darksun</title>
+  
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="fonts.css" />
+    	
+	<link rel="shortcut icon" href="#" />
+	<script>
+	  window.dataLayer = window.dataLayer || [];
+	  function gtag(){dataLayer.push(arguments);}
+	  gtag('js', new Date());
+
+	  gtag('config', 'UA-84835425-2');
+	</script>
+
+  </head>
+
+  <body>
+    <div class="home">
+
+<link href="https://cdn.bootcdn.net/ajax/libs/highlight.js/10.0.0/styles/routeros.min.css" rel="stylesheet">
+<script src="https://cdn.bootcdn.net/ajax/libs/highlight.js/10.0.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script src="https://cdn.bootcdn.net/ajax/libs/highlight.js/10.0.0/languages/lua.min.js"></script>
+<div class="article-meta">
+<h1><span class="title">Microlight中文文档</span></h1>
+
+<h2 class="date">2018/04/10</h2>
+</div>
+
+<main>
+
+
+<h2 id="概述">概述</h2>
+
+<p>翻译自原文档 <a href="http://stevedonovan.github.io/microlight/">Microlight</a>，删去了 <code>Array</code> 与实验性的那些部分。</p>
+
+<p>基于 C89 标准的Lua 标准库被刻意设计得很小巧。它作为高级开发的基础，所以 Lua 开发者喜欢在项目中收集一些有用的小的函数。</p>
+
+<p>Microlight 是对于 <code>library golf</code><sup class="footnote-ref" id="fnref:1"><a href="#fn:1">1</a></sup> 的一项尝试。在本项目中，我们的想法就是捕捉这些函数，放到一个库里面，再给它们写文档，使得用起来比自己写起来更容易。</p>
+
+<p>这个库作为极轻量的 <code>Penlight</code>，有接近 20 个模块和上百个函数。</p>
+
+<p>在 Lua 中，除了内核之外的东西都可以有自己的选择，下面的函数不想成为权威的选择。它们大多出现在由 Jay Carlson 创始的 Lua Mailing 列表中，然后被我和 Dirk Laurie 所实现。</p>
+
+<h3 id="字符串">字符串</h3>
+
+<p>Lua 没有内置将表转换成字符串形式的函数，这使得刚开始使用 Lua 交互模式的用户很沮丧。Microlight 提供了 <code>tstring</code>。注意，在全局重定义 <code>tostring</code> 不是一个好做法。这个技巧只是为了让命令行下的实验更尽人意。</p>
+
+<pre><code class="language-lua"> &gt; require 'ml'.import()
+ &gt; tostring = tstring
+ &gt; = {10,20,name='joe'}
+ {10,20,name=&quot;joe&quot;}
+</code></pre>
+
+<p>Lua 的字符串函数异常强大，但是其中却缺少了一些项目中很常用的函数。Lua 提供了 <code>table.concat</code> 合并一个表，但没有提供 <code>table.split</code> 分割字符串。</p>
+
+<pre><code class="language-lua"> &gt;  = split('hello dolly')
+ {&quot;hello&quot;,&quot;dolly&quot;}
+ &gt; = split('one,two',',')
+ {&quot;one&quot;,&quot;two&quot;}
+</code></pre>
+
+<p>其中的第二个参数是一个匹配模式，默认匹配空格。</p>
+
+<p>虽然在 Lua 下进行字符串插值并不困难，但是没有直接的函数可以完成这项工作。所以 Microlight 提供了 <code>ml.expand</code>。</p>
+
+<pre><code class="language-lua"> &gt; = expand(&quot;hello $you, from $me&quot;,{you='dolly',me='joe'})
+ hello dolly, from joe
+</code></pre>
+
+<p><code>expend</code> 函数也可以理解 <code>$var</code> 的另一个表达方式 <code>${var}</code>，而且可以接受一个函数作为第二个参数。</p>
+
+<p>Lua 的字符串函数使用了匹配模式，一个正则表达式的强大的子集。其中定义了魔法字符，比如 <code>.</code>，<code>$</code> 之类的。在某些场合，使用包含这些字符的字符串之前需要进行转义，<code>escape</code> 函数就可以创建这样一个字符串字面量。</p>
+
+<pre><code class="language-lua"> &gt; = ('woo%'):gsub(escape('%'),'hoo')
+ &quot;woohoo&quot;   1
+ &gt; = split(&quot;1.2.3&quot;,escape(&quot;.&quot;))
+ {&quot;1&quot;,&quot;2&quot;,&quot;3&quot;}
+</code></pre>
+
+<h3 id="文件与路径">文件与路径</h3>
+
+<p>虽然 <code>access</code> 在大多数平台上都得到了支持，但是它不是标准的一部分（这也是为什么它在 Windows 上被拼写为 <code>_access</code>）。所以判断一个文件是否存在，你得尝试打开它。</p>
+
+<pre><code class="language-lua"> function ml.exists (filename)
+     local f = io.open(filename)
+     if not f then
+         return nil
+     else
+         f:close()
+         return filename
+     end
+ end
+</code></pre>
+
+<p>返回值不是简单的 <code>true</code> 或 <code>false</code>，它返回的是原文件名，所以我们可以在一群候选文件中找出一个真正存在的文件。</p>
+
+<pre><code class="language-lua"> &gt; = exists 'README' or exists 'readme.txt' or exists 'readme.md'
+ &quot;readme.md&quot;
+</code></pre>
+
+<p>Lua 长于切割文本，所以通用的方法就是读完个不是很大的文件然后在字符串上进行操作。读取的工作可以交给 <code>readfile</code>。如下的代码返回了以二进制打开的文件的前 128 个字节。</p>
+
+<pre><code class="language-lua"> &gt; txt = readfile('readme.md',true):sub(1,128)
+</code></pre>
+
+<p>注意我指的是字节，而不是字符，因为字符串编码可能是任意字节长度的。</p>
+
+<p>如果 <code>readfile</code> 在打开或读取文件时发生了错误，它会返回 <code>nil</code> 和错误消息，这也是 <code>io.open</code> 与其它很多 Lua 函数的错误处理模式。在常规问题上抛出异常不是一个好方法。</p>
+
+<p>使用 <code>splitpath</code> 和 <code>splitext</code> 可以拆分一个路径。</p>
+
+<pre><code class="language-lua"> &gt; = splitpath(path)
+ &quot;/path/to/dogs&quot; &quot;bonzo.txt&quot;
+ &gt; = splitext(path)
+ &quot;/path/to/dogs/bonzo&quot;   &quot;.txt&quot;
+ &gt; = splitpath 'frodo.txt'
+ &quot;&quot;      &quot;frodo.txt&quot;
+ &gt; = splitpath '/usr/'
+ &quot;/usr&quot;  &quot;&quot;
+ &gt; = splitext '/usr/bin/lua'
+ &quot;/usr/bin/lua&quot;  &quot;&quot;
+</code></pre>
+
+<p>这些函数返回了两个字符串，其中一个可能是空字符串（而不是 <code>nil</code>）。在 Windows 上，接受反斜杠与正斜杠，在 Unix 上，只接受正斜杠。</p>
+
+<h3 id="插入与扩展">插入与扩展</h3>
+
+<p>大多数 Microlight 的函数与 Lua 的表有关。虽然表可能既是数组又是映射，我们通常把它们区分开来。现在，我们会用数组与映射来指代表。</p>
+
+<p><code>update</code> 把键值对添加到一个映射中，<code>extend</code> 把一个数组追加到另一个数组上。它们是两个互补的，向表塞入多个项的操作。</p>
+
+<pre><code class="language-lua"> &gt; a = {one=1,two=2}
+ &gt; update(a,{three=3,four=4})
+ &gt; = a
+ {one=1,four=4,three=3,two=2}
+ &gt; t = {10,20,30}
+ &gt; extend(t,{40,50})
+ &gt; = t
+ {10,20,30,40,50}
+</code></pre>
+
+<p>从 1.1 版本开始，这两个函数都接受任意个数的参数。</p>
+
+<p>想要把表「铺平」，只要将其 <code>unpack</code> 然后再使用 <code>extend</code> 即可。</p>
+
+<pre><code class="language-lua"> &gt; pair = {{1,2},{3,4}}
+ &gt; = extend({},unpack(pair))
+ {1,2,3,4}
+</code></pre>
+
+<p>简明地，<code>extend</code> 以一个可索引可写的对象作为参数，从 <code>#O+1</code> 开始写入元素，其中 <code>#O</code> 代表原数组的长度，而且原数组必须是没有空缺的。类似的，另外的几个数组也必须是可索引的，但不一定是可写的。这些参数通常但不一定是表，你可以利用 <code>extend</code> 总是从 <code>1</code> 写到 <code>#t</code> 这个行为，把第一个数组写成这个形式。</p>
+
+<pre><code class="language-lua"> &gt; obj = setmetatable({},{ __newindex = function(t,k,v) print(v) end })
+ &gt; extend(obj,{1,2,3})
+ 1
+ 2
+ 3
+</code></pre>
+
+<p>把一堆值插入数组的指定位置，你可以使用 <code>insertvalues</code>，它与 <code>table.insert</code> 类似，除了它可以接受一个数组作为插入值。如果你打算覆盖原数组的值，只要把第四个参数置为 <code>true</code>。</p>
+
+<pre><code class="language-lua"> &gt; t = {10,20,30,40,50}
+ &gt; insertvalues(t,2,{11,12})
+ &gt; = t
+ {10,11,12,20,30,40,50}
+ &gt; insertvalues(t,3,{2,3},true)
+ &gt; = t
+ {10,11,2,3,30,40,50}
+</code></pre>
+
+<p>注意，原表在进行这些操作之后已经改变了。</p>
+
+<p><code>update</code> 与 <code>extend</code> 类似，然而它可以处理一个映射，原始值在操作后可能被覆盖。</p>
+
+<pre><code class="language-lua"> &gt; t = {}
+ &gt; update(t,{one=1},{ein=1},{one='ONE'})
+ &gt; = t
+ {one=&quot;ONE&quot;,ein=1}
+</code></pre>
+
+<h3 id="截取与操作">截取与操作</h3>
+
+<p>扩展的相反操作就是从表中截取出一部分项目。</p>
+
+<p><code>sub</code> 函数，与 <code>string.sub</code> 类似，它和 Python 中的列表切片操作室等效的。</p>
+
+<pre><code class="language-lua"> &gt; numbers = {10,20,30,40,50}
+ &gt; = sub(numbers,1,1)
+ {10}
+ &gt; = sub(numbers,2)
+ {20,30,40,50}
+ &gt; = sub(numbers,1,-2)
+ {10,20,30,40}
+</code></pre>
+
+<p><code>indexby</code> 可以在表内索引一系列值。</p>
+
+<pre><code> &gt; = indexby(numbers,{1,4})
+ {10,40}
+ &gt; = indexby({one=1,two=2,three=3},{'three','two'})
+ {[3,2}
+</code></pre>
+
+<p><code>imap</code> 可以创建一个新数组，并把函数作用在所有元素上。</p>
+
+<pre><code class="language-lua"> &gt; words = {'one','two','three'}
+ &gt; = imap(string.upper,words)
+ {&quot;ONE&quot;,&quot;TWO&quot;,&quot;THREE&quot;}
+ &gt; s = {'10','x','20'}
+ &gt; ns = imap(tonumber,s)
+ &gt; = ns
+ {10,false,20}
+</code></pre>
+
+<p><code>imap</code> 总是返回一个和原数组相同大小的数组，如果函数返回 <code>nil</code>，它会用 <code>false</code> 填补空缺。</p>
+
+<p>还有一个常用函数 <code>indexof</code> 可以在数组中进行线性查找并返回下标，如果不成功，则返回 <code>nil</code>。</p>
+
+<pre><code class="language-lua"> &gt; = indexof(numbers,20)
+ 2
+ &gt; = indexof(numbers,234)
+ nil
+</code></pre>
+
+<p>这个函数有一个可选的判断谓词作为第三个参数。</p>
+
+<p>函数 <code>ifilter</code> 可以选出原数组中的所有合适的值。</p>
+
+<pre><code class="language-lua"> &gt; = ifilter(numbers,tonumber)
+ {&quot;10&quot;,&quot;20&quot;}
+</code></pre>
+
+<p><code>imap</code> 和 <code>ifilter</code> 结合产生了 <code>imapfilter</code>，它相当于一个删除无用项的 <code>imap</code> 函数。</p>
+
+<pre><code class="language-lua"> &gt; = imapfilter(tonumber,{'one',1,'f',23,2})
+ {1,23,2}
+</code></pre>
+
+<p><code>collect</code> 函数可以从迭代器中收集值，形成一个数组。<code>collectuntil</code> 可以用谓词决定终止条件，<code>collectn</code> 简单地收集指定数目个值。</p>
+
+<pre><code class="language-lua"> &gt; s = 'my dog ate your homework'
+ &gt; words = collect(s:gmatch '%a+')
+ &gt; = words
+ {&quot;my&quot;,&quot;dog&quot;,&quot;ate&quot;,&quot;your&quot;,&quot;homework&quot;}
+ &gt; R = function() return math.random() end
+ &gt; = collectn(3,R)
+ {0.0012512588885159,0.56358531449324,0.19330423902097}
+ &gt; lines = collectuntil(4,io.lines())
+ one
+ two
+ three
+ four
+ &gt; = lines
+ {&quot;one&quot;,&quot;two&quot;,&quot;three&quot;,&quot;four&quot;}
+</code></pre>
+
+<p>下面是一个简单的命令行排序程序。</p>
+
+<pre><code class="language-lua"> require 'ml'.import()
+ lines = collect(io.lines())
+ table.sort(lines)
+ print(table.concat(lines,'\n'))
+</code></pre>
+
+<p>最后，<code>removerange</code> 从数组中删除一段值，它和 <code>sub</code> 有相同的参数，但它是原地工作的，意味着原数组会被修改。</p>
+
+<h3 id="集合与映射">集合与映射</h3>
+
+<p>在数据量大时，<code>indexof</code> 不是一个好选择，因为它进行的是线性查找，在哈希表中查找肯定会更快。<code>invert</code> 可以把数组值变成一个表中的键。</p>
+
+<pre><code class="language-lua"> &gt; m = invert(numbers)
+ &gt; = m
+ {[20]=2,[10]=1,[40]=4,[30]=3,[50]=5}
+ &gt; = m[20]
+ 2
+ &gt; = m[30]
+ 3
+ &gt; = m[25]
+ nil
+ &gt; m = invert(words)
+ &gt; = m
+ {one=1,three=3,two=2}
+</code></pre>
+
+<p>于是我们从数组得到了一个表方便地搜索值，也可以方便地去重。在这里，我们不关心值，只关心键。</p>
+
+<pre><code class="language-lua"> &gt; = issubset(m,{one=true,two=true})
+ true
+</code></pre>
+
+<p><code>makemap</code> 可以从两个数组中构建出一个表来。</p>
+
+<pre><code class="language-lua"> &gt; = makemap({'a','b','c'},{1,2,3})
+ {a=1,c=3,b=2}
+</code></pre>
+
+<h3 id="高阶函数">高阶函数</h3>
+
+<p>函数是 Lua 中的一等公民，所以函数可以操作函数，这种函数叫做高阶函数。</p>
+
+<p>一个对象可执行，当且仅当它是一个函数，或者它的元表中有 <code>__call</code> 项。<code>callable</code> 函数可以检查这个性质。</p>
+
+<p>组合两个函数通常很有用。</p>
+
+<pre><code class="language-lua"> &gt; printf = compose(io.write,string.format)
+ &gt; printf(&quot;the answer is %d\n&quot;,42)
+ the answer is 42
+</code></pre>
+
+<p><code>bind1</code> 和 <code>bind2</code> 生成函数的一个特化，它们的参数个数会比以前少一个。<code>bind1</code> 把函数的第一个参数绑定为一个特定的值，这可以用来把成员函数变成普通函数。在 Lua 中，<code>obj:f(...)</code> 是 <code>obj.f(obj, ...)</code> 的缩写。然而这还不够，Lua 没有提供成员函数的隐式绑定，<code>bind1</code> 恰好可以完成这个工作。</p>
+
+<pre><code class="language-lua"> &gt; ewrite = bind1(io.stderr.write,io.stderr)
+ &gt; ewrite 'hello\n'
+</code></pre>
+
+<p>简单的日志就是输出内种后再进行换行。</p>
+
+<pre><code class="language-lua"> &gt; log = bind2(ewrite,'\n')
+ &gt; log 'hello'
+ hello
+</code></pre>
+
+<p>注意 <code>sub(t,1)</code> 就是一个简单的数组拷贝函数。</p>
+
+<pre><code class="language-lua"> &gt; copy = bind2(sub,1)
+ &gt; t = {1,2,3}
+ &gt; = copy(t)
+ {1,2,3}
+</code></pre>
+
+<p>可以这样断言字符串是不是空的。</p>
+
+<pre><code class="language-lua"> &gt; blank = bind2(string.match,'^%s*$')
+ &gt; = blank ''
+ &quot;&quot;
+ &gt; = blank '  '
+ &quot;  &quot;
+ &gt; = blank 'oy vey'
+ nil
+</code></pre>
+
+<p>返回值不是简单的 <code>true</code> 或 <code>false</code>，事实上 Lua 在后期才有了 <code>false</code> 的概念。在这里 <code>nil</code> 代表了 <code>false</code>，任何字符串都代表 <code>true</code>。</p>
+
+<p>可以用这个模式生成一群判断函数，比如用 <code>%x+</code> 判断十六进制数，用 <code>%u+</code> 判断大写字符串。你还可以继续玩这个捆绑游戏（大雾）。</p>
+
+<pre><code class="language-lua"> &gt; matcher = bind1(bind2,string.match)
+ &gt; hex = matcher '^%x+$'
+</code></pre>
+
+<p>这样的判断函数在 <code>ifind</code> 和 <code>ifilter</code> 中很有用。</p>
+
+<p>Lua 函数返回多个值很常见，有时候你只要第二个返回值，<code>take2</code> 就有用了。</p>
+
+<pre><code class="language-lua"> &gt; p = lfs.currentdir()
+ &gt; = p
+ &quot;C:\\Users\\steve\\lua\\Microlight&quot;
+ &gt; = splitpath(p)
+ &quot;C:\\Users\\steve\\lua&quot; &quot;Microlight&quot;
+ &gt; basename = take2(splitpath)
+ &gt; = basename(p)
+ &quot;Microlight&quot;
+ &gt; extension = take2(splitext)
+ &gt; = extension 'bonzo.dog'
+ &quot;.dog&quot;
+</code></pre>
+
+<p>函数 <code>map2fun</code> 和 <code>fun2map</code> 可以实现表和函数之间的互相转换。这在 API 要求一个函数，但我们只有表的时候很有用。</p>
+
+<pre><code class="language-lua"> &gt; obj = objects:find ('X.name=Y','Alfred')
+ {name='Afred',age=23}
+ &gt; by_name = function(name) return objects:find('X.name=Y',name) end
+ &gt; lookup = fun2map(by_name)
+ &gt; = lookup.Alfred
+ {name='Alfred',age=23}
+</code></pre>
+
+<p>如果你很聪明，或者是一个 S，那就可以写这样的匿名函数。</p>
+
+<pre><code class="language-lua"> by_name = bind1('X:find(&quot;X.name==Y&quot;,Y)',objects)
+</code></pre>
+
+<h3 id="类">类</h3>
+
+<p>Lua 和 Javascript 有两个共同点，对象都是扩展的表（有语法糖 <code>t.key == t['key']</code>），而且没有内置的类机制。这在一开始会让人很不爽，也会使人造出很多种不兼容的轮子。</p>
+
+<pre><code class="language-lua"> Animal = ml.class()
+ Animal.sound = '?'
+
+ function Animal:_init(name)
+     self.name = name
+ end
+
+ function Animal:speak()
+     return self._class.sound..' I am '..self.name
+ end
+
+ Cat = class(Animal)
+ Cat.sound = 'meow'
+
+ felix = Cat('felix')
+
+ assert(felix:speak() == 'meow I am felix')
+ assert(felix._base == Animal)
+ assert(Cat.classof(felix))
+ assert(Animal.classof(felix))
+</code></pre>
+
+<p>类可以创建一个表，表包含了一些方法。如果类有基类，基类也会被拷贝到表内。类表是每个实例的元表，如果 <code>obj.key</code> 在实例本身中没有被找到，Lua 会在它的类表中尝试寻找。这样更高效，因为每个实例不用携带函数的拷贝。</p>
+
+<p>这个类表是可执行的，每次执行它都会返回一个新对象，如果有 <code>_init</code> 方法的话，它就会在此时作为构造函数被调用。</p>
+
+<p>每个实例都有一个 <code>_class</code> 项指向它的类表，也可以用 <code>classof</code> 得到一个实例的类表。</p>
+
+<h2 id="字符串函数">字符串函数</h2>
+
+<h3 id="split-s-re-n">split(s, re, n)</h3>
+
+<p>分割字符串</p>
+
+<ul>
+<li><code>s</code>: 输入字符串</li>
+<li><code>re</code>: 一个 Lua 字符串匹配模式，默认为 <code>%s+</code>，即以空白字符分割</li>
+<li><code>n</code>: 可选的，最大分割数目</li>
+</ul>
+
+<p>返回一个包含字符串的数组</p>
+
+<h3 id="escape-s">escape(s)</h3>
+
+<p>转义字符串中的所有魔法字符 <code>^$()%.[]*+-?</code></p>
+
+<ul>
+<li><code>s</code>: 输入字符串</li>
+</ul>
+
+<p>返回一个转义后的字符串</p>
+
+<h3 id="expand-s-subst">expand(s, subst)</h3>
+
+<p>填充一个字符串，其中包含形容 <code>${var}</code> 或 <code>$var</code> 的模板。注意用于填充的值必须是一个字符串或者一个数</p>
+
+<ul>
+<li><code>s</code>: 输入字符串</li>
+<li><code>subst</code>: 一个表或者一个函数，用于查询填充值</li>
+</ul>
+
+<p>返回填充后的字符串</p>
+
+<h3 id="readfile-filename-is-bin">readfile(filename, is_bin)</h3>
+
+<p>以字符串的形式读取一个文件</p>
+
+<ul>
+<li><code>filename</code>: 文件路径</li>
+<li><code>is_bin</code>: 是否以二进制的形式打开文件</li>
+</ul>
+
+<p>返回文件内容，或者 <code>nil</code> 表示出错</p>
+
+<h3 id="writefile-filename-str-is-bin">writefile(filename, str, is_bin)</h3>
+
+<p>将字符串写入一个文件</p>
+
+<ul>
+<li><code>filename</code>: 文件路径</li>
+<li><code>str</code>: 写入的字符串</li>
+<li><code>is_bin</code>: 是否以二进制的形式打开文件</li>
+</ul>
+
+<p>返回 <code>true</code>，或者 <code>nil</code> 表示出错</p>
+
+<h2 id="文件系统函数">文件系统函数</h2>
+
+<h3 id="exists-filename">exists(filename)</h3>
+
+<p>返回文件是否存在</p>
+
+<ul>
+<li><code>filename</code>: 文件路径</li>
+</ul>
+
+<p>返回原来的文件路径，或者 <code>nil</code> 表示不存在，下面是一个例子：</p>
+
+<pre><code class="language-lua">file = exists 'readme' or exists 'readme.txt' or exists 'readme.md'
+</code></pre>
+
+<h3 id="splitpath-p">splitpath(P)</h3>
+
+<p>将路径划分为文件夹部分和文件名部分，如果文件夹部分不存在，则第一个返回值会是空字符串。可以在 Windows 上处理正斜杠和反斜杠两种路径</p>
+
+<ul>
+<li><code>P</code>: 文件路径</li>
+</ul>
+
+<p>返回两个值，文件夹部分和文件名部分</p>
+
+<h3 id="splitext-p">splitext(P)</h3>
+
+<p>将路径划分为文件名部分和扩展名部分，如果扩展名部分不存在，则第二个返回值会是空字符串</p>
+
+<ul>
+<li><code>P</code>: 文件路径</li>
+</ul>
+
+<p>返回两个值，文件名部分和扩展名部分</p>
+
+<h2 id="扩展的表处理函数">扩展的表处理函数</h2>
+
+<p>这里的「数组」是指形似数组的表，针对数组的函数只会对<code>1..#t</code>这部分的表进行操作，而且针对了这个特性进行了特殊优化。</p>
+
+<h3 id="tstring-t-how">tstring(t, how)</h3>
+
+<p>将 Lua 值的字符串表示返回。作用于表时，可以检测环的存在，而且返回结果可以是良好格式化的。</p>
+
+<ul>
+<li><code>t</code>: 待转换的值</li>
+<li><code>how</code>: 可选的，一个表包含了键值 <code>spacing</code> 和 <code>indent</code> ，或者仅仅一个字符串代表 <code>indent</code></li>
+</ul>
+
+<p>返回一个字符串</p>
+
+<h3 id="collect">collect(&hellip;)</h3>
+
+<p>从一个迭代器中收集一串值</p>
+
+<ul>
+<li><code>...</code>:  一个迭代器</li>
+</ul>
+
+<p>返回一个数组。下面是一个例子，其中<code>keys(t)</code>代表表中的所有键：</p>
+
+<pre><code class="language-lua">collect(pairs(t)) is the same as keys(t)
+</code></pre>
+
+<h3 id="collectuntil-f">collectuntil(f, &hellip;)</h3>
+
+<p>从一个迭代器中收集一串值，直到谓词返回 <code>true</code></p>
+
+<ul>
+<li><code>f</code>: 谓词函数</li>
+<li><code>...</code> 一个迭代器</li>
+</ul>
+
+<p>返回一个数组</p>
+
+<h3 id="collectn-n">collectn(n, &hellip;)</h3>
+
+<p>从一个迭代器中收集一串值，直到收集完 <code>n</code> 个值</p>
+
+<ul>
+<li><code>n</code>: 收集的值的个数</li>
+<li><code>...</code>: 一个迭代器</li>
+</ul>
+
+<p>返回一个数组</p>
+
+<h3 id="collect2nd">collect2nd(&hellip;)</h3>
+
+<p>从一个迭代器中收集一串值，这里收集的总是返回的第二个值。如果第二个值不存在，会被跳过而不是被收集</p>
+
+<ul>
+<li><code>...</code>: 一个迭代器</li>
+</ul>
+
+<p>返回一个数组，下面是一个例子：</p>
+
+<pre><code class="language-lua">collect2nd(pairs{ one=1, two=2 }) is {1, 2} or {2, 1}
+</code></pre>
+
+<h3 id="mapextend-dest-j-nilv-f-t">mapextend(dest, j, nilv, f, t, &hellip;)</h3>
+
+<p>通过一个函数将一个表扩展到另一个表</p>
+
+<ul>
+<li><code>dest</code>: 目标表</li>
+<li><code>j</code>: 目标表中的下标起始值</li>
+<li><code>nilv</code>: 如果函数返回 <code>nil</code>，默认的替换值</li>
+<li><code>f</code>: 一个函数</li>
+<li><code>t</code>: 原表</li>
+<li><code>...</code>: 函数的额外参数</li>
+</ul>
+
+<p>返回被扩展的表，即 <code>dest</code></p>
+
+<h3 id="imap-f-t">imap(f, t, &hellip;)</h3>
+
+<p>把一个函数作用在一个数组上，其中返回 <code>nil</code> 的部分会被设置为 <code>false</code></p>
+
+<ul>
+<li><code>f</code>: 一个函数</li>
+<li><code>t</code>: 原数组</li>
+<li><code>...</code>: 函数的额外参数</li>
+</ul>
+
+<p>返回一个新数组，这个函数与下面的函数功能相同：</p>
+
+<pre><code class="language-lua">mapextend(t,1,false,f,t,...)
+</code></pre>
+
+<h3 id="transform-f-t">transform(f, t, &hellip;)</h3>
+
+<p>把一个函数原地作用到一个数组上</p>
+
+<ul>
+<li><code>f</code>: 一个函数</li>
+<li><code>t</code>: 原数组</li>
+<li><code>...</code>: 函数的额外参数</li>
+</ul>
+
+<p>返回变换后的数组</p>
+
+<h3 id="imap2-f-t1-t2">imap2(f, t1, t2, &hellip;)</h3>
+
+<p>把一个函数作用在两个数组上，这个函数接受两个值。返回数组的长度是两个数组中短的那个的长度`</p>
+
+<ul>
+<li><code>f</code>: 一个函数</li>
+<li><code>t1</code>: 第一个数组</li>
+<li><code>t2</code>: 第二个数组</li>
+<li><code>...</code>: 函数的额外参数</li>
+</ul>
+
+<p>返回一个新数组</p>
+
+<h3 id="imapfilter-f-t">imapfilter(f, t, &hellip;)</h3>
+
+<p>类似 <code>imap</code>，但是<code>nil</code>值会被删除</p>
+
+<ul>
+<li><code>f</code>: 一个函数</li>
+<li><code>t</code>: 原数组</li>
+<li><code>...</code>: 函数的额外参数</li>
+</ul>
+
+<p>返回一个新数组</p>
+
+<h3 id="ifilter-t-pred">ifilter(t, pred, &hellip;)</h3>
+
+<p>筛选数组，留下谓词返回 <code>true</code> 的那部分</p>
+
+<ul>
+<li><code>t</code>: 原数组</li>
+<li><code>pred</code>: 谓词函数</li>
+<li><code>...</code>: 函数的额外参数</li>
+</ul>
+
+<p>返回一个新数组</p>
+
+<h3 id="ifind-t-pred">ifind(t, pred, &hellip;)</h3>
+
+<p>用谓词在数组中找到第一个匹配值。</p>
+
+<ul>
+<li><code>t</code>: 原数组</li>
+<li><code>pred</code>: 谓词函数</li>
+<li><code>...</code>: 函数的额外参数</li>
+</ul>
+
+<p>返回一个值，下面是一个例子</p>
+
+<pre><code class="language-lua">ifind({{1,2},{4,5}},'X[1]==Y',4) is {4,5}
+</code></pre>
+
+<h3 id="indexof-t-value-cmp">indexof(t, value, cmp)</h3>
+
+<p>返回数组中某个值的下标</p>
+
+<ul>
+<li><code>t</code>: 原数组</li>
+<li><code>value</code>: 指定值</li>
+<li><code>cmp</code>: 谓词函数，默认为 <code>X==Y</code></li>
+</ul>
+
+<h3 id="sub-t-i1-i2">sub(t, i1, i2)</h3>
+
+<p>返回一个数组的切片，类似于<a href="http://www.lua.org/manual/5.1/manual.html#pdf-string.sub"><code>string.sub</code></a></p>
+
+<ul>
+<li><code>t</code>: 原数组</li>
+<li><code>i1</code>: 起始下标，默认为 1</li>
+<li><code>i2</code>: 终止下标，默认为 <code>#t</code></li>
+</ul>
+
+<p>返回切片，包括起点与终点</p>
+
+<h3 id="removerange-tbl-start-finish">removerange(tbl, start, finish)</h3>
+
+<p>删除数组中的一段值</p>
+
+<ul>
+<li><code>tbl</code>: 原数组</li>
+<li><code>start</code>: 起始下标</li>
+<li><code>finish</code>: 终止下标</li>
+</ul>
+
+<h3 id="insertvalues-dest-index-src-overwrite">insertvalues(dest, index, src, overwrite)</h3>
+
+<p>将 <code>src</code> 中的元素拷贝到 <code>dest</code>，起始下标为 <code>index</code>，默认会移动 <code>dest</code>中的元素来腾出空间</p>
+
+<ul>
+<li><code>dest</code>: 目标数组</li>
+<li><code>index</code>: 复制到的起始下标</li>
+<li><code>src</code>: 原数组</li>
+<li><code>overwrite</code>: 是否直接覆盖而不是位移</li>
+</ul>
+
+<h3 id="extend-t">extend(t, &hellip;)</h3>
+
+<p>通过其他数组来扩展一个数组</p>
+
+<ul>
+<li><code>t</code>: 被扩展的数组</li>
+<li><code>...</code>: 其他数组</li>
+</ul>
+
+<p>返回被扩展的数组</p>
+
+<h3 id="indexby-t-keys">indexby(t, keys)</h3>
+
+<p>在表内选出指定的键值对，返回值所形成的数组</p>
+
+<ul>
+<li><code>t</code>: 一个表</li>
+<li><code>keys</code>: 键所形成的数组</li>
+</ul>
+
+<p>返回值所形成的数组，下面是两个例子：</p>
+
+<pre><code class="language-lua">indexby({one=1,two=2},{'one','three'}) is {1}
+indexby({10,20,30,40},{2,4}) is {20,40}
+</code></pre>
+
+<h3 id="range-x1-x2-d">range(x1, x2, d)</h3>
+
+<p>创建一个表，表示从 <code>x1</code> 到 <code>x2</code>，步长为 <code>d</code> 的数列</p>
+
+<ul>
+<li><code>x1</code>: 起始值</li>
+<li><code>x2</code>: 终值</li>
+<li><code>d</code>: 步长，默认为1</li>
+</ul>
+
+<p>返回一个数组，下面是两个例子</p>
+
+<pre><code class="language-lua">range(2,10) is {2,3,4,5,6,7,8,9,10}
+range(5) is {1,2,3,4,5}
+</code></pre>
+
+<h3 id="update-t">update(t, &hellip;)</h3>
+
+<p>将多个表合并至第一个表，对于重复的键值，来自第一个表的会被舍弃</p>
+
+<ul>
+<li><code>t</code>: 被更新的表</li>
+<li><code>...</code>: 被合并的表</li>
+</ul>
+
+<p>返回被更新后的表</p>
+
+<h3 id="makemap-t-tv">makemap(t, tv)</h3>
+
+<p>用键数组与值数组构建一个表</p>
+
+<ul>
+<li><code>t</code>: 键数组</li>
+<li><code>tv</code>: 值数组</li>
+</ul>
+
+<p>返回构建出来的表，下面是一个例子：</p>
+
+<pre><code class="language-lua">makemap({'power','glory'},{20,30}) is {power=20,glory=30}
+</code></pre>
+
+<h3 id="invert-t">invert(t)</h3>
+
+<p>用一个数组构建一个集合，其中的键是数组中的值</p>
+
+<ul>
+<li><code>t</code>: 原数组</li>
+</ul>
+
+<p>返回一个表，下面是一个例子：</p>
+
+<pre><code class="language-lua">invert({'one','two'}) is {one=1,two=2}
+</code></pre>
+
+<h3 id="keys-t">keys(t)</h3>
+
+<p>构建以表中所有键形成的数组</p>
+
+<ul>
+<li><code>t</code>: 原表</li>
+</ul>
+
+<p>返回一个数组</p>
+
+<h3 id="issubset-t-other">issubset(t, other)</h3>
+
+<p>判断是否为子集，以键为判断标准</p>
+
+<ul>
+<li><code>t</code>: 一个集合</li>
+<li><code>other</code>: 另一个集合</li>
+</ul>
+
+<p>返回 <code>other</code> 是否为 <code>t</code> 的子集</p>
+
+<h3 id="containkeys-t-other">containkeys(t, other)</h3>
+
+<p>这是 <code>issubset</code> 的一个别名</p>
+
+<h3 id="count-t">count(t)</h3>
+
+<p>求表的大小</p>
+
+<ul>
+<li><code>t</code>: 一个表</li>
+</ul>
+
+<p>返回表的大小</p>
+
+<h3 id="equalkeys-t-other">equalkeys(t, other)</h3>
+
+<p>判断两个表是否有完全相同的键</p>
+
+<ul>
+<li><code>t</code>: 一个表</li>
+<li><code>other</code>: 另一个表</li>
+</ul>
+
+<p>返回是否有完全相同的键</p>
+
+<h2 id="函数式">函数式</h2>
+
+<h3 id="throw-f">throw(f)</h3>
+
+<p>抛出原函数的异常</p>
+
+<ul>
+<li><code>f</code>: 一个函数，异常时会返回 <code>nil,err</code></li>
+</ul>
+
+<p>返回一个等效的可以抛出错误的函数</p>
+
+<h3 id="bind1-f-v">bind1(f, v)</h3>
+
+<p>把 <code>v</code> 绑定到函数 <code>f</code> 上的第一个参数</p>
+
+<ul>
+<li><code>f</code>: 一个至少接受一个参数的函数</li>
+<li><code>v</code>: 一个参数</li>
+</ul>
+
+<p>返回一个函数，接受的参数比原函数少一个</p>
+
+<h3 id="bind1-f-v-1">bind1(f, v)</h3>
+
+<p>把 <code>v</code> 绑定到函数 <code>f</code> 上的第二个参数</p>
+
+<ul>
+<li><code>f</code>: 一个至少接受一个参数的函数</li>
+<li><code>v</code>: 一个参数</li>
+</ul>
+
+<p>返回一个函数，接受的参数比原函数少一个</p>
+
+<h3 id="compose-f1-f2">compose(f1, f2)</h3>
+
+<p>合并两个函数</p>
+
+<ul>
+<li><code>f1</code>: 外层函数</li>
+<li><code>f2</code>: 内层函数</li>
+</ul>
+
+<p>返回合并后的函数，相当于<code>f1(f2(...))</code></p>
+
+<h3 id="take2-f">take2(f)</h3>
+
+<p>得到原函数的第二个返回值</p>
+
+<ul>
+<li><code>f</code>: 原函数，至少返回两个参数</li>
+</ul>
+
+<p>返回一个函数，它会返回原函数的第二个返回值，下面是一个例子：</p>
+
+<pre><code class="language-lua">take2(splitpath) is basename
+</code></pre>
+
+<h3 id="callable-obj">callable(obj)</h3>
+
+<p>判断一个对象是否可被调用</p>
+
+<ul>
+<li><code>obj</code>: 被判断的对象</li>
+</ul>
+
+<p>返回时否可被调用</p>
+
+<h3 id="map2fun-t">map2fun(t)</h3>
+
+<p>把一张表转换成一个函数的形式</p>
+
+<ul>
+<li><code>t</code>: 一张表或者是另外的可索引对象</li>
+</ul>
+
+<p>返回一个函数</p>
+
+<h3 id="fun2map-f">fun2map(f)</h3>
+
+<p>把一个函数转换成一张表的形式</p>
+
+<ul>
+<li><code>t</code>: 一个函数，只有一个参数</li>
+</ul>
+
+<p>返回一张表</p>
+
+<h3 id="function-arg-f">function_arg(f)</h3>
+
+<p>把东西变成可执行的函数，这个函数支持把 <em>string lambda</em> 转换为函数。所谓 <em>string lambda</em> ，就是一个直接返回的，以 <code>X,Y,Z</code> 代表其三个参数的一个字符串。</p>
+
+<ul>
+<li><code>f</code>: 一个可执行体或者一个 <em>string lambda</em></li>
+</ul>
+
+<p>返回一个函数。如果 <code>f</code> 不是可执行的或者不是一个合法的 <em>string lambda</em> ，就会抛出异常，下面是一个例子：</p>
+
+<pre><code class="language-lua">function_arg('X+Y')(1,2) == 3
+</code></pre>
+
+<h3 id="memoize-func">memoize(func)</h3>
+
+<p>记忆化一个函数</p>
+
+<ul>
+<li><code>func</code>: 一个至少接受一个参数的函数</li>
+</ul>
+
+<p>返回一个函数，这个函数只会记忆化其<strong>第一个参数</strong></p>
+
+<h2 id="类-1">类</h2>
+
+<h3 id="class-base">class(base)</h3>
+
+<p>以 <code>base</code> 为父类创建一个类</p>
+
+<ul>
+<li><code>base</code>: 可选的，父类</li>
+</ul>
+
+<p>返回一个表代表类</p>
+<div class="footnotes">
+
+<hr />
+
+<ol>
+<li id="fn:1">一种<a href="https://en.wikipedia.org/wiki/Code_golf">Code golf</a>，这里指写出最短的库
+ <a class="footnote-return" href="#fnref:1"><sup>[return]</sup></a></li>
+</ol>
+</div>
+
+<hr>
+<div id="comment"></div>
+</main>
+
+  <footer>
+  <hr></hr>
+<div>Copyright © 2015-2018 ccinv. All rights reserved.</div>
+  
+  </footer>
+  </div>
+  </body>
+</html>
+
+<link href="https://cdn.bootcdn.net/ajax/libs/KaTeX/0.10.0/katex.min.css" rel="stylesheet">
+<script src="https://cdn.bootcdn.net/ajax/libs/KaTeX/0.10.0/katex.min.js"></script>
+<script src="https://cdn.bootcdn.net/ajax/libs/KaTeX/0.10.0/contrib/auto-render.min.js"></script>
+<script>renderMathInElement(document.body,{delimiters: [{left: "$$", right: "$$", display: true},{left: "$", right: "$", display: false},]});</script>

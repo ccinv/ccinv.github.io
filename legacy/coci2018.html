@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>coci2018抓水题 | Darksun</title>
+  
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="fonts.css" />
+    	
+	<link rel="shortcut icon" href="#" />
+	<script>
+	  window.dataLayer = window.dataLayer || [];
+	  function gtag(){dataLayer.push(arguments);}
+	  gtag('js', new Date());
+
+	  gtag('config', 'UA-84835425-2');
+	</script>
+
+  </head>
+
+  <body>
+    <div class="home">
+
+<link href="https://cdn.bootcdn.net/ajax/libs/highlight.js/10.0.0/styles/routeros.min.css" rel="stylesheet">
+<script src="https://cdn.bootcdn.net/ajax/libs/highlight.js/10.0.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script src="https://cdn.bootcdn.net/ajax/libs/highlight.js/10.0.0/languages/lua.min.js"></script>
+<div class="article-meta">
+<h1><span class="title">coci2018抓水题</span></h1>
+
+<h2 class="date">2018/02/09</h2>
+</div>
+
+<main>
+
+
+<h3 id="plahte-https-raw-githubusercontent-com-ccinv-szk-master-coci-2018-plahte-cpp"><a href="https://raw.githubusercontent.com/ccinv/szk/master/coci/2018/PLAHTE.cpp">plahte</a></h3>
+
+<p>给定一些矩形和一些有颜色的点，求每个矩形上有多少种颜色的点，保证矩形只有包含和不相交两种关系，规模 $10^5$。</p>
+
+<p>把每个矩形看成一个点，用扫描线建出森林，同时也顺便处理点。</p>
+
+<p>然后做一个树上的集合转移,把儿子集合的元素并到父亲集合去。这个问题有树状数组的做法，但我试了一下轻重链剖分，写起来还是挺友好的。注意这里的重儿子选择标准不是节点个数，而是节点上颜色个数，这样复杂度算起来才是正确的。（一个log跑起来比两个log的标算慢<del>我也是很服气</del>）</p>
+
+<hr />
+
+<h3 id="san-https-raw-githubusercontent-com-ccinv-szk-master-coci-2018-san-cpp"><a href="https://raw.githubusercontent.com/ccinv/szk/master/coci/2018/SAN.cpp">san</a></h3>
+
+<p>给出一个长度小于等于 $20$ 的二元组序列和一个数 $k$，$k$ 的规模为 $10^{10}$，第一个数代表高度，第二个数代表金币，求金币总和不小于 $k$ 的不下降子序列个数。</p>
+
+<p>折半搜索。将原序列分成 $[1,n/2],[n/2+1,n]$ 两个区间，以高度为关键字升序加入每一个点，显然后加入的且在后半部分的点都可以由前面加入的且在前半部分的点转移，数据结构维护值域上的区间和即可。</p>
+
+<p>这题很好地证明了背包问题是NP难的？</p>
+
+<h3 id="usmjeri-https-raw-githubusercontent-com-ccinv-szk-master-coci-2018-usmjeri-cpp"><a href="https://raw.githubusercontent.com/ccinv/szk/master/coci/2018/USMJERI.cpp">usmjeri</a></h3>
+
+<p>给出一棵树以及若干个限制条件，要求你把树定向成一个有向图，使得给出的限制中的每对点联通，求方案总数，规模 $10^{5}$。</p>
+
+<p>首先把问题转化为给边染色：对于每个限制 $a_i,b_i$ ，给树上的边染色，令 $c_i=lca(a_i,b_i)$，使得 $a_i \rightarrow c_i$ 上的边颜色相同，$b_i \rightarrow c_i$ 上的边颜色相同，如果 $a_i,b_i$ 不属于一条链，还需满足 $a_i \rightarrow c_i$ 与 $b_i \rightarrow c_i$ 上的颜色互异。</p>
+
+<p>先尝试解决一个 auxiliary problem：多次把树上路径之间的所有点合并，求联通块个数？做法类似于差分：维护 $low$ 数组，初始 $low_x=dep_x$ 合并 $a,b$ 时做一个操作 $$low_a=min(low_a,dep_c),low_b=min(low_b,dep_c)$$</p>
+
+<p>这样从根再做一遍 dfs，把 $low$ 值小于当前节点深度的儿子与当前节点连边。对新图再 dfs 一遍就可以求出解。</p>
+
+<p>然后对于每个限制，把两点到 lca 的链合并，如果不在一条链上，再把这两个点也连上特殊边。注意一个合法的联通块中，不能存在有奇数条特殊边的环，否则答案就是 $0$，所以要跑一边二分图染色判断是否合法，若合法，每个联通块的贡献只能是 $2$，乘到答案里就可以了。</p>
+
+<h3 id="garaza-https-raw-githubusercontent-com-ccinv-szk-master-coci-2018-garaza-cpp"><a href="https://raw.githubusercontent.com/ccinv/szk/master/coci/2018/GARAZA.cpp">garaza</a></h3>
+
+<p>给出一串数列，多次询问区间内所有数均不互质的子序列个数，支持单点修改，规模 $10^{5}$。</p>
+
+<p>瞄的题解。这种题目肯定是要把信息转换为线段树上容易合并的形式。题解的方法就是做一遍前缀gcd，再做一遍后缀gcd。设前缀gcd去重相邻前后两项为 $a,b$，显然 $b \mid a$ 且 $b \neq a$，则 $b \leq \frac{a}{2}$，因此前缀gcd去重后的项数是对数级的，后缀同理，于是两个区间合并可以直接暴力统计跨过分界线的贡献，同时维护前缀和后缀即可。</p>
+
+<hr />
+
+<h3 id="dojave">dojave</h3>
+
+<p>给出一个 $0&hellip;2^{M}-1$ 的排列，对于每个非空区间，你必须选择排列中的任意两个不相同元素并且交换，如果存在一种交换可以使这个区间内的数异或和恰好为 $2^{M}-1$，则这个区间是合法的，求合法区间个数，$M$的规模为 $20$。</p>
+
+<h3 id="sazetak">sazetak</h3>
+
+<p>有一个长度为 $n$ 的未知的数列。对于一个输入 $k$ ，你可以得到一个 $\lceil \frac {n}{k} \rceil$ 元组 $$(a_1+&hellip;+a_k,a_{k+1}+&hellip;+a_{2 \times k},&hellip;,a_{{\lceil \frac {n} {k} \rceil} \times k}+&hellip;a_n)$$</p>
+
+<p>现在给出数列 $k_i$ 说明你得到了对于这些输入的信息，问你可以用这些信息至多确定多少数列中的元素，$n$ 的规模为 $10^9$，$k$ 的规模为 $10$。</p>
+
+<hr />
+
+<h3 id="vode">vode</h3>
+
+<p>绵羊和山羊博弈，它们站成一排，每人报出 $[1,k]$ 之间的数字，并且加到 $sum$ 中，同时要确保操作后 $sum \leq M$，求以每个位置为起点时，谁是必胜的，规模均为 $5 \times 10^3$。</p>
+
+<h3 id="krov-https-raw-githubusercontent-com-ccinv-szk-master-coci-2018-krov-cpp"><a href="https://raw.githubusercontent.com/ccinv/szk/master/coci/2018/KROV.cpp">krov</a></h3>
+
+<p>给出一个序列表示一张柱状图，序列中的每个数表示这个位置柱子的高度，将根柱子长度增加或减少 $1$ 的代价都是 $1$，长度规模 ${10}^{5}$，高度规模 ${10}^{9}$。求出将其变成一个<code>屋顶</code>的最小代价。<code>屋顶</code>是指一个呈金字塔形的柱状图，满足其柱子长度均为正整数且 $$\exists a_i,\forall a_j=a_i-\left | j-i \right |$$</p>
+
+<p>枚举<code>屋顶</code>的顶点，则答案关于该顶点高度的函数显然是一个凸函数，三分这个高度，现在则需要可接受的复杂度内求出该高度下的答案函数值。这个求值可以用平衡树实现，从 $i$ 更新到 $i+1$，只需要将 $i+1$ 从右树删除，加入左树，同时左边打上 $+1$ 标记，右边打上 $-1$ 标记以模拟相位，查询区间就可以了。</p>
+
+<p>非旋Treap的常数emmm&hellip;复杂度是 $O(n\log n)$，但最后一个点在cf上跑了 1.4 秒，本机上只能跑 $n=50000$ 左右的数据，弃了等题解xD。</p>
+
+<p>瞄了一眼Result，第四名的罗马尼亚小哥和我的实现方法相似，拿了 126 分。满分是诡异的 BIT 算法，理解不能。</p>
+
+<h3 id="ceste">ceste</h3>
+
+<p>给出一张有向图，每条边有两个权值，求出 $1$ 号点到其他所有点的乘积最短路，点数规模为 $5000$。</p>
+
+<hr />
+
+<h3 id="pictionary-https-raw-githubusercontent-com-ccinv-szk-master-coci-2018-pictionary-cpp"><a href="https://raw.githubusercontent.com/ccinv/szk/master/coci/2018/PICTIONARY.cpp">pictionary</a></h3>
+
+<p>有 $N$ 个点，在 $M$ 天里面，连接 $a$ 与 $b$ 的无向边在第 $m-gcd(a,b)+1$ 建成，给你若干询问，输出询问中两个点联通的最早时刻。点数规模 $10^5$。</p>
+
+<p>考虑建图跑 MST，然而复杂度太高。那么把每天也都看成点来优化建图，根据调和级数，边数就是 $O(n \log n)$ 的，询问时输出树上路径的最小值即可。</p>
+
+<h3 id="planinarenje-https-raw-githubusercontent-com-ccinv-szk-master-coci-2018-planinarenje-cpp"><a href="https://raw.githubusercontent.com/ccinv/szk/master/coci/2018/PLANINARENJE.cpp">planinarenje</a></h3>
+
+<p>给出一张二分图，从二分图左侧出发，两人交替行走，不能走到走过的节点，不能走的人输。若两人均采取最优策略，询问对于每个起点谁是必胜态。点数和边数规模 $5 \times 10^3$ 。</p>
+
+<p>裸的二分图博弈，移除起点跑一次最大匹配，检查匹配数是否相等即可。</p>
+
+<hr />
+
+<h3 id="cover-https-raw-githubusercontent-com-ccinv-szk-master-coci-2018-cover-cpp"><a href="https://raw.githubusercontent.com/ccinv/szk/master/coci/2018/COVER.cpp">cover</a></h3>
+
+<p>给出坐标系里的一些点，你可以用若干个矩形覆盖它们（包括边界），求矩形的最小面积和。矩形的边必须和坐标轴平行，且矩形的中心必须恰好位于原点。点数规模 $5 \times 10^3$。</p>
+
+<p>显然点具有对称性，所以可以把所有的点变换到第一象限，按 x 坐标排序，设 $f_i$ 是覆盖完前i个点的最小代价，则$$f_i=min \left\{ f_j+max \left\{ y_{j+1} \cdots y_i \right\} \times x_i \right\}$$</p>
+
+<h3 id="kotrljanje">kotrljanje</h3>
+
+<p>给出一个数列 $a_n=Cn+D$，要求你构造另一个长度为 $M$ 的数列 $b_n$，使得 $a_{b_i}$ 在 $B$ 进制下各数位和相等。$C,D$ 规模 $10^4$，$B$ 规模$5 \times 10^3$，$M$ 的规模 $2.5 \times 10^5$。</p>
+
+<h3 id="vrtic">vrtic</h3>
+
+<p>将 $N$ 个数分配给 $N$ 个人，给出 $a_i$，设每个人分到的数是 $b_i$，最小化 $\sum |b_i-b_{a_i}|$，要求输出方案，点数规模 $150$。</p>
+
+<hr />
+
+<h3 id="dostavljač">dostavljač</h3>
+
+<p>给出一棵树，点具有权值。从 $1$ 号点开始，有两种操作，一个是向相邻节点走一步，还有是获得点上的权值（不能获取两遍）。总操作次数不超过 $M$，最大化获得的权值。节点数和最大操作数规模 $500$。</p>
+
+<h3 id="priglavci-https-raw-githubusercontent-com-ccinv-szk-master-coci-2018-priglavci-cpp"><a href="https://raw.githubusercontent.com/ccinv/szk/master/coci/2018/PRIGLAVCI.cpp">priglavci</a></h3>
+
+<p>给出 $N$ 个人，$M$ 个点，$K$ 条巴士线，每条巴士线上都包含有若干个点，人可以从这些点上车，但每条巴士线不能容纳超过 $C$ 人。把每个人分配到一个点上车，定义分配代价为他到点的欧氏距离，求所有人的代价的最大值的最小值。</p>
+
+<p>考虑二分，建出三列点分别表示人、点和巴士线，选出合法边后按题意建图跑最大流，判断是否有 $N$ 的流量即可。</p>
+
+<hr>
+<div id="comment"></div>
+</main>
+
+  <footer>
+  <hr></hr>
+<div>Copyright © 2015-2018 ccinv. All rights reserved.</div>
+  
+  </footer>
+  </div>
+  </body>
+</html>
+
+<link href="https://cdn.bootcdn.net/ajax/libs/KaTeX/0.10.0/katex.min.css" rel="stylesheet">
+<script src="https://cdn.bootcdn.net/ajax/libs/KaTeX/0.10.0/katex.min.js"></script>
+<script src="https://cdn.bootcdn.net/ajax/libs/KaTeX/0.10.0/contrib/auto-render.min.js"></script>
+<script>renderMathInElement(document.body,{delimiters: [{left: "$$", right: "$$", display: true},{left: "$", right: "$", display: false},]});</script>

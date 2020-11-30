@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>PKUWC 2018 | Darksun</title>
+  
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="fonts.css" />
+    	
+	<link rel="shortcut icon" href="#" />
+	<script>
+	  window.dataLayer = window.dataLayer || [];
+	  function gtag(){dataLayer.push(arguments);}
+	  gtag('js', new Date());
+
+	  gtag('config', 'UA-84835425-2');
+	</script>
+
+  </head>
+
+  <body>
+    <div class="home">
+
+<link href="https://cdn.bootcdn.net/ajax/libs/highlight.js/10.0.0/styles/routeros.min.css" rel="stylesheet">
+<script src="https://cdn.bootcdn.net/ajax/libs/highlight.js/10.0.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script src="https://cdn.bootcdn.net/ajax/libs/highlight.js/10.0.0/languages/lua.min.js"></script>
+<div class="article-meta">
+<h1><span class="title">PKUWC 2018</span></h1>
+
+<h2 class="date">2018/02/01</h2>
+</div>
+
+<main>
+
+
+<h1 id="jun-12-jun-18">Jun 12 - Jun 18</h1>
+
+<p>See <a href="https://docs.google.com/spreadsheets/d/1Hmj5ae_S_W0ttujd_rJ2AJ-0uImcvFXkRlD8UlAaLIc/edit?usp=sharing">Spreadsheet</a></p>
+
+<h1 id="jun29">Jun29</h1>
+
+<ul>
+<li><code>LOJ 105</code> 动车上写了一道Treap模板居然1A了</li>
+</ul>
+
+<p>动车晚点1个多小时，给它差评。据说别人的动车晚点3个小时，奥妙重重。</p>
+
+<p>据说这次PKUWC是IOI赛制，但是机房电脑都不让摸，只让看，奥妙重重x2。</p>
+
+<p>THUWC好像是住在雅礼中学的，然而<del>我住的宾馆离学校很远</del>，奥妙重重x3。</p>
+
+<h1 id="jun30">Jun30</h1>
+
+<p>早上考数学，前面的30道选择题，简单得毫无意义。后面四道解答只会1道，剩下的只能装作是在讲道理啦。</p>
+
+<p>下午机试，打开就发现画风不对！三题不可做题。九条可怜emm&hellip;吉老师没得洗了。T2好像是个奇怪的DP，别人都会打就我不会打。T1是大力线段树合并，没看出来。T3全场爆零不说了。吉老师说<strong>选手太菜吧</strong>。</p>
+
+<p>打了一点部分分，凉了凉了。这里记一下题意：</p>
+
+<ul>
+<li>给出一棵有根树，叶子节点有一个数代表权值（权值互异），每个非叶子节点最多只有两个儿子且有一个概率$p$，表示有$p$的概率在子节点中选一个最大值，有 $1-p$ 的概率在子节点中选一个最小值。设第 $i$ 小的权值为 $v_i$ ，且在根节点被取到的概率为 $q_i$，求$\sum i*v_i*p_i^{2}$</li>
+<li>给出两类牌各$n$张，每张都写着一个正整数。第一类牌是攻击牌，可以打出去，造成上面写着数字的伤害。第二类牌是加强牌，可以让你打出去的攻击牌上的数字乘上它的数字，且上面的数大于 $1$ 。求任选 $m$ 张牌，并将其中 $k$ 张按最优策略打出后能造成伤害的期望值。</li>
+<li>题目都没怎么看，喵喵喵？</li>
+</ul>
+
+<h1 id="jun31">Jun31</h1>
+
+<p>早上是第二场机试。昨天考了两道期望，一道计数，今天总要考<del>数据结构</del>了吧，果然不出所料，又考了三道期望，首次代码模板里写了快速幂233，最后乱搞<strong>切了T1</strong>，拿了个大众分。
+这里记一下题目:</p>
+
+<ul>
+<li>给出一张无向图和一种随机求最大独立集的算法（随机一个排列，按排列贪心加点），求它的正确概率。</li>
+<li>给出一串数$w_i$，当有$m$个人存活时，第$x$个人被淘汰的概率是$\frac {w_x}{\sum w_i}$，求第一个人最后被淘汰的概率。</li>
+<li>给出一张无向图和一个出发点，一个人在每个顶点上都会等概率向相邻节点移动。询问中包括一个点集，求由出发点开始，走遍点集中所有点的期望步数。</li>
+</ul>
+
+<p>下午姿势水平不够，不能和面试官谈笑风生（没学上flag）。下面是我的全场最佳：</p>
+
+<blockquote>
+<p>Q:你是在说王者荣耀吗？</p>
+
+<p>A:我不玩王者荣耀。</p>
+</blockquote>
+
+<h1 id="feb01">Feb01</h1>
+
+<p>早上起来发现CF上紫了，很开心。想写游记却发现TODO里还有很多东西。</p>
+
+<p>闭营仪式上先讲了一下题，印象最深刻的是，台上一个妹子讲Day2 T1的$O(2^{{n^2}}*n^2)$竟然能跑过$n=20$的数据，难以置信！而且我记得我打的$O(2^n*n^2)$好像是AC提交里跑得最慢的一个，技不如人，甘拜下风。那么这题区别的岂不是是有梦想选手和没梦想选手？</p>
+
+<p>合影，发约，不想说什么了，拿到的是废约，至少放在浙江是废约，除了第一句话，每句话都是以<code>进入省队</code>开头的。</p>
+
+<p>最后再<strong>匿名</strong>评价一下：不住宿舍好评，概率与期望专题训练差评，斗地主差评，其他五题好评，IOI赛制好评。</p>
+
+<p>完结撒花。</p>
+
+<hr>
+<div id="comment"></div>
+</main>
+
+  <footer>
+  <hr></hr>
+<div>Copyright © 2015-2018 ccinv. All rights reserved.</div>
+  
+  </footer>
+  </div>
+  </body>
+</html>
+
+<link href="https://cdn.bootcdn.net/ajax/libs/KaTeX/0.10.0/katex.min.css" rel="stylesheet">
+<script src="https://cdn.bootcdn.net/ajax/libs/KaTeX/0.10.0/katex.min.js"></script>
+<script src="https://cdn.bootcdn.net/ajax/libs/KaTeX/0.10.0/contrib/auto-render.min.js"></script>
+<script>renderMathInElement(document.body,{delimiters: [{left: "$$", right: "$$", display: true},{left: "$", right: "$", display: false},]});</script>

@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>ZJOI 2018 | Darksun</title>
+  
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="fonts.css" />
+    	
+	<link rel="shortcut icon" href="#" />
+	<script>
+	  window.dataLayer = window.dataLayer || [];
+	  function gtag(){dataLayer.push(arguments);}
+	  gtag('js', new Date());
+
+	  gtag('config', 'UA-84835425-2');
+	</script>
+
+  </head>
+
+  <body>
+    <div class="home">
+
+<link href="https://cdn.bootcdn.net/ajax/libs/highlight.js/10.0.0/styles/routeros.min.css" rel="stylesheet">
+<script src="https://cdn.bootcdn.net/ajax/libs/highlight.js/10.0.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script src="https://cdn.bootcdn.net/ajax/libs/highlight.js/10.0.0/languages/lua.min.js"></script>
+<div class="article-meta">
+<h1><span class="title">ZJOI 2018</span></h1>
+
+<h2 class="date">2018/04/30</h2>
+</div>
+
+<main>
+
+
+<h1 id="feb7">Feb7</h1>
+
+<p>补了一下学校里的套题。</p>
+
+<ul>
+<li><a href="https://raw.githubusercontent.com/ccinv/szk/master/senior/B799BB6E452977D9E3856A4CE40CECBE/hack.cpp">Hack</a> 构造一个字符串，使之与给出的字符串Hash相同，字符串长度小于等于8，字符集为26，Hash方式为 BKDRHash，且种子给定。</li>
+<li><a href="https://raw.githubusercontent.com/ccinv/szk/master/senior/B799BB6E452977D9E3856A4CE40CECBE/tree.cpp">Tree</a> 求最小标准差生成树（<code>BZOJ 3751</code>)</li>
+<li>Wall 一道连通性DP，坑着。</li>
+</ul>
+
+<h1 id="feb-8">Feb 8</h1>
+
+<ul>
+<li><code>BZOJ 3513</code> FFT</li>
+<li><code>BZOJ 1975</code> Astar</li>
+<li><code>COCI18 garaza</code> 前缀gcd性质/线段树</li>
+</ul>
+
+<h1 id="feb-9">Feb 9</h1>
+
+<ul>
+<li><code>COCI18 planinarenje</code> 二分图博弈</li>
+</ul>
+
+<h1 id="feb-10">Feb 10</h1>
+
+<ul>
+<li><code>LOJ 6279</code> 水了一下hzwer的数列分块入门·3，一开始用了set，没能过。准备优化常数的时候想到两种操作的复杂度是不平衡的，用不等式推了一下发现，在数据随机的情况下分块大小不应该是$\sqrt n$而应该是$\sqrt {n \times \frac {log_2 n*a+b}{log_2 n \times b+a}}$，这样就可以把$log$放到根号里面去。可惜LOJ的数据丧心病狂，后面出的全是$op=1$的情况，这种优化就退化成了一种特殊情况，即分块大小为$\sqrt {nlog_2 n}$，在这篇文章里已经说过了<sup class="footnote-ref" id="fnref:1"><a href="#fn:1">1</a></sup>。</li>
+<li><code>BZOJ 1070</code> 费用流/拆点游戏</li>
+<li><code>BZOJ 1016</code> 暴力</li>
+</ul>
+
+<h1 id="feb-12">Feb 12</h1>
+
+<ul class="task-list">
+<li><label><input type="checkbox" disabled class="task-list-item"> <code>HDU 6087</code> 数据结构</label></li>
+</ul>
+
+<h1 id="feb-13">Feb 13</h1>
+
+<p>中间两天被吃掉了23333</p>
+
+<ul class="task-list">
+<li><label><input type="checkbox" checked disabled class="task-list-item"> <code>BZOJ 4289</code> 相当有技巧的最短路模型转换与优化连边</label></li>
+<li><label><input type="checkbox" checked disabled class="task-list-item"> <code>BZOJ 4152</code> 同上</label></li>
+<li><label><input type="checkbox" checked disabled class="task-list-item"> <code>BZOJ 4777</code> 生成树(<a href="https://www.luogu.org/problemnew/show/P3665">luogu</a>)</label></li>
+<li><label><input type="checkbox" disabled class="task-list-item"> <code>AGC 18F</code> 欧拉回路</label></li>
+<li><label><input type="checkbox" checked disabled class="task-list-item"> <strong><code>BZOJ 1016</code> 线性规划转费用流</strong></label></li>
+<li><label><input type="checkbox" checked disabled class="task-list-item"> <code>BZOJ 3894</code> 二元费用问题</label></li>
+<li><label><input type="checkbox" disabled class="task-list-item"> <strong>k短路/最短路树</strong>/斯坦纳树</label></li>
+<li><label><input type="checkbox" disabled class="task-list-item"> <strong>图计数问题</strong></label></li>
+</ul>
+
+<p>YJQ的最短路理论让我有点心累啊。</p>
+
+<h1 id="feb-14">Feb 14</h1>
+
+<ul class="task-list">
+<li><label><input type="checkbox" checked disabled class="task-list-item"> <code>COGS 2123</code> 最小表示法</label></li>
+<li><label><input type="checkbox" checked disabled class="task-list-item"> <code>LOJ 6036</code> Trie/2-SAT</label></li>
+<li><label><input type="checkbox" checked disabled class="task-list-item"> <code>BZOJ 2795</code> Hash(<a href="https://www.luogu.org/problemnew/show/P3538">luogu</a>)</label></li>
+<li><label><input type="checkbox" checked disabled class="task-list-item"> <code>BZOJ 3626</code> 离线/链剖</label></li>
+<li><label><input type="checkbox" disabled class="task-list-item"> <code>LOJ 6041</code> 分块</label></li>
+<li><label><input type="checkbox" disabled class="task-list-item"> Manacher/<strong><a href="http://blog.csdn.net/u013368721/article/details/42100363">回文树</a></strong>/<strong>SAM</strong></label></li>
+</ul>
+
+<h1 id="feb-16">Feb 16</h1>
+
+<ul>
+<li>CodeForces Round 463(Div 1 + Div 2) :<font color=00aa00>ABCDEF</font>G</li>
+</ul>
+
+<h1 id="feb-17">Feb 17</h1>
+
+<ul>
+<li>CodeForces Round 464(Div 2) :<font color=00aa00>ABCDE</font>F</li>
+</ul>
+
+<h1 id="feb-18">Feb 18</h1>
+
+<ul class="task-list">
+<li><label><input type="checkbox" disabled class="task-list-item"> <code>BZOJ 4654</code> 一种姿势是四边形不等式</label></li>
+<li><label><input type="checkbox" disabled class="task-list-item"> <code>BZOJ 4897</code>  <strong>区间dp之dp套dp</strong></label></li>
+<li><label><input type="checkbox" checked disabled class="task-list-item"> <code>AGC 001E</code> 模型转换/组合数意义</label></li>
+<li><label><input type="checkbox" checked disabled class="task-list-item"> <code>BZOJ 1488</code> <strong>图同构计数</strong></label></li>
+<li><label><input type="checkbox" disabled class="task-list-item"> <code>BZOJ 4271</code>  prufer序列</label></li>
+<li><label><input type="checkbox" checked disabled class="task-list-item"> <code>LOJ 6039</code> 分治DP</label></li>
+<li><label><input type="checkbox" disabled class="task-list-item"> <a href="https://community.topcoder.com/stat?c=problem_statement&amp;pm=12735">SRM 592 DIV1 500pts</a> 基于未来的DP（玄学DP？）</label></li>
+<li><label><input type="checkbox" disabled class="task-list-item"> <code>BZOJ 4693</code> 数位DP</label></li>
+</ul>
+
+<h1 id="feb-19">Feb 19</h1>
+
+<ul class="task-list">
+<li><label><input type="checkbox" checked disabled class="task-list-item"> <code>CF 799F</code> 套路Hash</label></li>
+<li><label><input type="checkbox" disabled class="task-list-item"> <a href="https://csacademy.com/contest/archive/task/add-and-subtract/statement/">CS Academy Add and Subtrack</a> 只证不猜/码农</label></li>
+<li><label><input type="checkbox" checked disabled class="task-list-item"> <code>BZOJ 1863</code> 二分</label></li>
+<li><label><input type="checkbox" checked disabled class="task-list-item"> <code>UOJ 218</code> 数据结构</label></li>
+<li><label><input type="checkbox" disabled class="task-list-item"> <code>POJ 1160</code> wqs二分或四边形优化</label></li>
+</ul>
+
+<h1 id="feb-21">Feb 21</h1>
+
+<ul>
+<li><code>BZOJ 4621</code> 「普及组」DP</li>
+<li><code>HDU 1724</code> 自适应辛普森</li>
+</ul>
+
+<h1 id="feb-24">Feb 24</h1>
+
+<ul>
+<li><code>BZOJ 4868</code> 贪心</li>
+<li><code>BZOJ 4869</code> 欧拉降幂</li>
+<li><code>BZOJ 4870</code> 组合数意义/矩阵乘法</li>
+<li>Codeforces Round 466(Div 2) :<font color=00aa00>ABCDEF</font></li>
+</ul>
+
+<h1 id="feb-25">Feb 25</h1>
+
+<ul>
+<li><code>BZOJ 4872</code> 最大权闭合子图</li>
+<li><code>BZOJ 4873</code> 贪心/期望DP</li>
+</ul>
+
+<h1 id="mar1">Mar1</h1>
+
+<ul>
+<li><code>CF 940F</code> 带修莫队</li>
+<li><code>SPOJ 839</code> 最小割</li>
+</ul>
+
+<h1 id="mar-2">Mar 2</h1>
+
+<ul>
+<li><code>CF 932E</code> 第二类Strling</li>
+</ul>
+
+<h1 id="mar-3">Mar 3</h1>
+
+<ul>
+<li><code>CF 932F</code> 树上启发式合并/李超树</li>
+<li><code>BZOJ 3527</code> FFT</li>
+<li>对于<code>vector&lt;T&gt;</code>中的元素进行引用时，要注意 <code>push_back</code> 是否会引起一次扩张，如果扩张了则该引用会失效。<sup class="footnote-ref" id="fnref:1"><a href="#fn:1">1</a></sup></li>
+</ul>
+
+<h1 id="mar-4">Mar 4</h1>
+
+<ul>
+<li><code>BZOJ 3626</code> 离线/链剖</li>
+<li><code>CF 906D</code> 欧拉降幂</li>
+</ul>
+
+<h1 id="mar-5">Mar 5</h1>
+
+<ul>
+<li><code>BZOJ 1488/1815</code> 图同构计数/Polya定理/排列组合</li>
+<li><code>BZOJ 2657</code> 三角剖分转树</li>
+<li><code>CodeChef CHANOQ</code> KDTREE</li>
+</ul>
+
+<h1 id="mar-6">Mar 6</h1>
+
+<ul>
+<li><code>BZOJ 2795</code> Hash</li>
+<li><code>BKDRHash</code>的 $seed$ 要取得正常一点，像 $26$ 这样的会表现得很萎。</li>
+</ul>
+
+<h1 id="mar-7">Mar 7</h1>
+
+<ul>
+<li><code>LOJ 6036</code> Trie/2-SAT</li>
+</ul>
+
+<h1 id="mar-8">Mar 8</h1>
+
+<ul>
+<li><code>COGS 2123</code> 最小表示法</li>
+<li><code>LOJ 6039</code> 分治DP</li>
+</ul>
+
+<h1 id="mar-9">Mar 9</h1>
+
+<ul>
+<li><code>BZOJ 4777</code> 生成树</li>
+<li><code>BZOJ 1059</code> 二分图匹配</li>
+<li>Codeforces Round 469(Div 2) :<font color=00aa00>ABCD</font>EF</li>
+</ul>
+
+<h1 id="mar-10">Mar 10</h1>
+
+<ul>
+<li><code>BZOJ 5163</code> 读题与猜题/二分</li>
+</ul>
+
+<h1 id="mar-11">Mar 11</h1>
+
+<ul>
+<li><code>BZOJ 3240</code> 矩乘/费马小定理</li>
+</ul>
+
+<h1 id="mar-12">Mar 12</h1>
+
+<ul>
+<li><code>BZOJ 3996</code> 最小割</li>
+</ul>
+
+<h1 id="mar-13">Mar 13</h1>
+
+<ul>
+<li><code>BZOJ 1492</code> cdq分治斜率优化</li>
+</ul>
+
+<h1 id="mar-15">Mar 15</h1>
+
+<ul>
+<li><code>BZOJ 4382/LOJ 2275</code> Hash</li>
+<li><code>BZOJ 5099</code> 极角排序/双指针</li>
+</ul>
+
+<h1 id="mar-16">Mar 16</h1>
+
+<ul>
+<li><a href="https://raw.githubusercontent.com/ccinv/szk/master/senior/bzoj_noi2016/stack.cpp"><code>NOI2016十连测 stack</code></a> 可持久化Treap</li>
+<li><a href="https://raw.githubusercontent.com/ccinv/szk/master/senior/bzoj_noi2016/string.cpp"><code>NOI2016十连测 string</code></a> 可持久化KMP</li>
+</ul>
+
+<h1 id="mar-18">Mar 18</h1>
+
+<ul>
+<li><code>CF949E</code> 结论/暴力</li>
+<li><a href="https://raw.githubusercontent.com/ccinv/szk/master/coci/2018/COVER.cpp"><code>COCI18 COVER</code></a> 简单DP</li>
+</ul>
+
+<h1 id="mar-19-21">Mar 19-21</h1>
+
+<p>连续三天，雨。</p>
+
+<p>War3颓得醉生梦死，各种神奇的多人地图局域网打起来不知道比一些吸金网游高到哪里去了。</p>
+
+<p>有件事情很有趣，打开炉石传说发现旁边来了个长沙雅礼的大佬看我玩模块术打弑君贼他就激动地说我模块术打弑君贼不占优势打赢全靠手溜啊长沙话真是amazing。</p>
+
+<p>然鹅，Day1的出题人又是那个代表黑恶势力的男人，学了好几年OI和没学OI其实体现在成绩上或许差不多。</p>
+
+<p>二中图书馆里有本《老子的智慧》，超级好看。抬头看见的隔着玻璃的崇高的太阳，慈中是看不见的，或者好久没看见过了。</p>
+
+<p>春分，春天是这么丧的省选，妙不可言。</p>
+
+<p>Day2? 可能没有Day2了，半AFO。</p>
+
+<p>吉老师多可爱啊，不出题就更可爱了。</p>
+
+<h1 id="mar-27">Mar 27</h1>
+
+<ul>
+<li><code>BZOJ 1835</code> 线段树优化DP</li>
+<li><code>CF 954I</code> bitset</li>
+</ul>
+
+<h1 id="mar-28">Mar 28</h1>
+
+<ul>
+<li><a href="https://raw.githubusercontent.com/ccinv/szk/master/senior/bzoj_noi2016/gene.cpp"><code>NOI2016十连测 gene</code></a> Manacher/主席树</li>
+<li><a href="https://raw.githubusercontent.com/ccinv/szk/master/senior/bzoj_noi2016/life.cpp"><code>NOI2016十连测 life</code></a> 类De Bruijn序列/欧拉回路</li>
+</ul>
+
+<h1 id="mar-29">Mar 29</h1>
+
+<ul>
+<li><code>CF 954H</code> 简单DP</li>
+</ul>
+
+<h1 id="mar-30">Mar 30</h1>
+
+<ul>
+<li><a href="https://raw.githubusercontent.com/ccinv/szk/master/senior/bzoj_noi2016/canal.cpp"><code>NOI2016十连测 canal</code></a> Lindström–Gessel–Viennot引理(<a href="https://en.wikipedia.org/wiki/Lindstr%C3%B6m%E2%80%93Gessel%E2%80%93Viennot_lemma">wiki</a>)</li>
+<li><code>CF 559D</code> <a href="http://codeforces.com/blog/entry/45223">SOS DP</a></li>
+</ul>
+
+<h1 id="mar-31">Mar 31</h1>
+
+<ul>
+<li><code>CF 755G</code> 倍增DP/NTT</li>
+<li><code>LOJ 2274</code> 贪心</li>
+</ul>
+
+<h1 id="apr-fool">Apr Fool</h1>
+
+<ul>
+<li><code>CF 663E</code> FWT(<a href="http://picks.logdown.com/posts/179290-fast-walsh-hadamard-transform">picks</a>)</li>
+<li><code>BZOJ 4036</code> FWT/不太懂</li>
+</ul>
+
+<h1 id="apr-3">Apr 3</h1>
+
+<ul>
+<li><code>CF 464E</code> 数据结构练手题</li>
+<li><code>priority_queue</code>的重载运算符不能写成非成员函数</li>
+</ul>
+
+<h1 id="apr-11">Apr 11</h1>
+
+<ul>
+<li><code>BZOJ 5215</code> 可重组合</li>
+<li><code>CF 959F</code> 线性基/自由元</li>
+</ul>
+
+<h1 id="apr-12">Apr 12</h1>
+
+<ul>
+<li><code>BZOJ 3997</code> Dilworth定理(<a href="https://en.wikipedia.org/wiki/Dilworth%27s_theorem">wiki</a>)(<a href="https://www.cnblogs.com/ZDHYXZ/p/6871802.html]">感性理解</a>)</li>
+<li><code>BZOJ 2115</code> 线性基/XOR图的性质</li>
+<li>二维树状数组<del>（老年人）</del>的事情</li>
+</ul>
+
+<pre><code class="language-c++">void mod(int x,int y,int z){
+    for(;x&lt;=n;x+=lowbit(x))for(;y&lt;=m;y+=lowbit(y)) //wrong
+    for(;x&lt;=n;x+=lowbit(x))for(int _y=y;_y&lt;=m;_y+=lowbit(_y)) //right
+}
+</code></pre>
+
+<h1 id="apr-14">Apr 14</h1>
+
+<ul>
+<li><code>CF 896D</code> 卡特兰数</li>
+<li>Helvetic Coding 2018 :<font color=00aa00>A2B2C2C3</font>D2<font color=00aa00>E2E3F2F3</font></li>
+</ul>
+
+<h1 id="apr-16">Apr 16</h1>
+
+<ul>
+<li><code>CF 958F3</code> 等价类/启发式合并FFT</li>
+<li><code>CF 958C2</code> 模域DP</li>
+</ul>
+
+<h1 id="apr-17">Apr 17</h1>
+
+<ul>
+<li><code>CF 958C3</code> 分类算法/模域DP/抽屉原理</li>
+<li><code>CF 958E3</code> 结论/极角排序/分治</li>
+</ul>
+
+<h1 id="apr-18">Apr 18</h1>
+
+<ul>
+<li><code>CF 958A2</code> Hash</li>
+<li><code>CF 958B2</code> 树的直径</li>
+<li><code>BZOJ 5294</code> 水题/<del>辣鸡 SYH 一眼看成拉格朗日插值</del></li>
+<li><code>BZOJ 5301</code> 莫队</li>
+<li>省选怎么出水题啊，省选怎么出原题啊，ZJOI 怎么就没有此等福利啊</li>
+<li>$HC^{2}$ 的题目好像快切完了，还剩一道不可做题和一道线代题</li>
+</ul>
+
+<p><img src="/legacy/hc2018.png" alt="HC2" /></p>
+
+<h1 id="apr-20">Apr 20</h1>
+
+<ul>
+<li><code>BZOJ 5298</code> 二项式反演</li>
+<li>上面那题是 TC 的<code>FibonacciStringSum</code>，你省原题真多</li>
+</ul>
+
+<h1 id="apr-21">Apr 21</h1>
+
+<ul>
+<li><code>BZOJ 1878</code> 扫描线强制在线 -&gt; 主席树</li>
+<li><code>BZOJ 4026</code> 同上</li>
+</ul>
+
+<h1 id="apr-23">Apr 23</h1>
+
+<ul>
+<li><code>51Nod 1135</code> 原根</li>
+<li><code>BZOJ 3992</code> 原根/倍增NTT</li>
+<li>Tinkoff Internship Warmup Round 2018 and Codeforces Round 475 (Div. 1) :<font color=00aa00>AB</font>C<font color=00aa00>D</font>E</li>
+<li><code>CF 963D</code> 复杂度分析</li>
+<li><code>CF 193B</code> 爆搜/转换 $2^n$ -&gt; $Fib_n$</li>
+</ul>
+
+<h1 id="apr-24">Apr 24</h1>
+
+<ul>
+<li><a href="https://raw.githubusercontent.com/ccinv/szk/master/coci/2018/PRIGLAVCI.cpp"><code>COCI18 PRIGLAVCI</code></a> 最大流</li>
+<li><code>BZOJ 3143</code> 高斯消元</li>
+</ul>
+
+<h1 id="apr-25">Apr 25</h1>
+
+<ul>
+<li><code>LOJ 6276</code> dfs序/矩形覆盖扫描线</li>
+<li>sfc 还把我准考证搞丢了，退役flag？</li>
+<li>退役flag个@，明天可得婊死 sfc</li>
+</ul>
+
+<h1 id="apr-26">Apr 26</h1>
+
+<p>呕呕呕，四月快没了，我也退役了。</p>
+
+<p>Day2 的画风稍微正常点，T2 我能想出个 Treap 的 40 分解法，但是不一定还会打，打了不一定对，对了也不一定能翻盘。</p>
+
+<p>cwy 也进不了队，好像这个队不是凭本事进的一样。</p>
+
+<p>不如多学学文化课，免得变成傻逼网友。</p>
+
+<p>身既死兮神以灵。</p>
+
+<h1 id="补题">补题</h1>
+
+<ul class="task-list">
+<li><label><input type="checkbox" disabled class="task-list-item"> <code>BZOJ 5212</code> ZJOI2018 Day1 T2</label></li>
+<li><label><input type="checkbox" checked disabled class="task-list-item"> <code>BZOJ 5308</code> ZJOI2018 Day2 T2</label></li>
+</ul>
+<div class="footnotes">
+
+<hr />
+
+<ol>
+<li id="fn:1"><a href="http://www.cplusplus.com/reference/vector/vector/push_back/">vector::push_back</a>:If a reallocation happens, all contained elements are modified.
+ <a class="footnote-return" href="#fnref:1"><sup>[return]</sup></a></li>
+</ol>
+</div>
+
+<hr>
+<div id="comment"></div>
+</main>
+
+  <footer>
+  <hr></hr>
+<div>Copyright © 2015-2018 ccinv. All rights reserved.</div>
+  
+  </footer>
+  </div>
+  </body>
+</html>
+
+<link href="https://cdn.bootcdn.net/ajax/libs/KaTeX/0.10.0/katex.min.css" rel="stylesheet">
+<script src="https://cdn.bootcdn.net/ajax/libs/KaTeX/0.10.0/katex.min.js"></script>
+<script src="https://cdn.bootcdn.net/ajax/libs/KaTeX/0.10.0/contrib/auto-render.min.js"></script>
+<script>renderMathInElement(document.body,{delimiters: [{left: "$$", right: "$$", display: true},{left: "$", right: "$", display: false},]});</script>

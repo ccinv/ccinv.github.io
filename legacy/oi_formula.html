@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>OI公式集 | Darksun</title>
+  
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="fonts.css" />
+        
+    <link rel="shortcut icon" href="#" />
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-84835425-2');
+    </script>
+
+  </head>
+
+  <body>
+    <div class="home">
+
+<link href="https://cdn.bootcdn.net/ajax/libs/highlight.js/10.0.0/styles/routeros.min.css" rel="stylesheet">
+<script src="https://cdn.bootcdn.net/ajax/libs/highlight.js/10.0.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script src="https://cdn.bootcdn.net/ajax/libs/highlight.js/10.0.0/languages/lua.min.js"></script>
+<div class="article-meta">
+<h1><span class="title">OI公式集</span></h1>
+
+<h2 class="date">2018/01/18</h2>
+</div>
+
+<main>
+
+
+<h2 id="主定理">主定理</h2>
+
+<p>计算 $T(n)=aT(n/b)+f(n), a \geq 1, b \geq 1$</p>
+
+<p>如果 $\exists \epsilon&gt;0$ 使得 $f(n)=\mathcal{O}(n^{\log_b a - \epsilon})$ ,则 $T(n)=\Theta(n^{\log_b a})$</p>
+
+<p>如果 $f(n)=\Theta(n^{\log_b a})$ ,则 $T(n)=\Theta(n^{\log_b a}\log_2 n)$</p>
+
+<p>如果 $\exists \epsilon&gt;0$使得$f(n)=\Omega(n^{\log_b a + \epsilon})$ ,且 $\exists c&lt;1$ 使得对于充分大的$n$满足$af(n/b) \leq cf(n)$,则$T(n)=\Theta(f(n))$</p>
+
+<h2 id="欧拉定理">欧拉定理</h2>
+
+<p>$$a^{\phi(n)} \equiv 1 \pmod n,(a,n)=1$$</p>
+
+<h2 id="原根与指标">原根与指标</h2>
+
+<p>设 $p$ 是奇质数，$g$ 为 $p$ 的一个原根，若 $g^{p} = q,p \in [0,p-1]$，记 $I(q)=p$ 为指标，则指标满足下列性质
+$$I(ab) \equiv I(a)+I(b) \pmod{p-1}$$
+$$I(a^k) \equiv kI(a) \pmod{p-1}$$</p>
+
+<h2 id="莫比乌斯反演">莫比乌斯反演</h2>
+
+<p>$F(n)$ 和 $f(n)$ 是定义在非负整数集合上面的两个函数，并且满足 $F(n) = \sum \limits_ {d \mid n} f(d)$，那么$$\sum \limits_ {d\mid n} \mu(d) F(\frac{n} {d})=f(n)$$</p>
+
+<h2 id="第二类strling数展开">第二类Strling数展开</h2>
+
+<p>$${a}^{k}=\sum_ {i=1}^{k} \left\{ i, k \right\} * \binom {i} {a} \times i!$$</p>
+
+<hr>
+<div id="comment"></div>
+</main>
+
+  <footer>
+  <hr></hr>
+<div>Copyright © 2015-2018 ccinv. All rights reserved.</div>
+  
+  </footer>
+  </div>
+  </body>
+</html>
+
+
+<link href="https://cdn.bootcdn.net/ajax/libs/KaTeX/0.10.0/katex.min.css" rel="stylesheet">
+<script src="https://cdn.bootcdn.net/ajax/libs/KaTeX/0.10.0/katex.min.js"></script>
+<script src="https://cdn.bootcdn.net/ajax/libs/KaTeX/0.10.0/contrib/auto-render.min.js"></script>
+<script>renderMathInElement(document.body,{delimiters: [{left: "$$", right: "$$", display: true},{left: "$", right: "$", display: false},]});</script>
